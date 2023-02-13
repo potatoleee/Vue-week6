@@ -1,9 +1,7 @@
-<script setup>
-import TheWelcome from "../components/TheWelcome.vue";
-</script>
+<script setup></script>
 
 <template>
   <main>
-    <TheWelcome />
+    <h1>這是第六週</h1>
   </main>
 </template>
