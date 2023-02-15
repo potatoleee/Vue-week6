@@ -1,0 +1,19 @@
+// 不要去改node bootstrap.utilities
+$utilities: map-merge(
+  $utilities,
+  (
+    "font-size":
+      map-merge(
+        map-get($utilities, "font-size"),
+        (
+          responsive: true,
+          rfs: false
+        )
+      ),
+    "object-fit": (
+      property: object-fit,
+      class: object,
+      values: cover
+    )
+  )
+);

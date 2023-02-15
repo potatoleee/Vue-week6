@@ -1,29 +1,37 @@
 <template>
   <VueLoading v-model:active="isLoading"></VueLoading>
-  <table>
-    <tbody>
-      <tr v-for="product in productList" :key="product.id">
-        <td>{{ product.title }}</td>
-        <td>{{ product.price }}</td>
-        <td><img :src="product.imageUrl" width="200" alt="" /></td>
-        <td>
-          <RouterLink
-            :to="`/product/${product.id}`"
-            class="btn btn-outline-secondary"
-            >更多細節
-          </RouterLink>
-          <button
-            type="button"
-            class="btn btn-outline-primary"
-            @click="addToCart(product.id)"
-          >
-            加入購物車
-          </button>
-        </td>
-      </tr>
-    </tbody>
-    <tfoot></tfoot>
-  </table>
+
+  <div class="col-12 col-md-10">
+    <ul class="row gy-6">
+      <li
+        class="col-6 col-lg-4 px-md-6"
+        v-for="product in productList"
+        :key="product.id"
+      >
+        <RouterLink :to="`/product/${product.id}`">
+          <img class="rounded-2 img-fluid" :src="product.imageUrl" alt="" />
+        </RouterLink>
+        <h3 class="font-serifTc fs-6 fs-md-5 mb-4 text-center letterSpace-2">
+          {{ product.title }}
+        </h3>
+        <p class="font-serifTc mb-4 text-center letterSpace-4">
+          NT$ {{ product.price }}
+        </p>
+        <button
+          type="button"
+          class="btn btn-primary"
+          @click="addToCart(product.id)"
+        >
+          加入購物車
+        </button>
+        <!-- <RouterLink
+          :to="`/product/${product.id}`"
+          class="btn btn-outline-secondary"
+          >更多細節
+        </RouterLink> -->
+      </li>
+    </ul>
+  </div>
 </template>
 
 <script>
