@@ -2,7 +2,7 @@
 @import "./assets/all.scss";
 </style>
 <template>
-  <div class="container">
+  <div>
     <RouterView></RouterView>
   </div>
 </template>

@@ -2,7 +2,7 @@
   <div class="container">
     <VueLoading v-model:active="isLoading"></VueLoading>
     <!-- 購物車列表 -->
-    <div class="text-end" v-if="cart.carts?.length > 0">
+    <div class="text-end" v-if="cartList.carts?.length > 0">
       <button
         class="btn btn-outline-danger"
         type="button"
@@ -21,8 +21,8 @@
           <th></th>
         </tr>
       </thead>
-      <tbody v-if="cart.carts?.length > 0">
-        <tr v-for="cartItem in cart.carts" :key="cartItem.id">
+      <tbody v-if="cartList.carts?.length > 0">
+        <tr v-for="cartItem in cartList.carts" :key="cartItem.id">
           <td class="d-flex align-items-center gap-2">
             <div
               alt=""
@@ -86,11 +86,11 @@
       <tfoot>
         <tr>
           <td colspan="4" class="text-end">總計</td>
-          <td class="text-end">NT$ {{ cart.total }}</td>
+          <td class="text-end">NT$ {{ cartList.total }}</td>
         </tr>
         <tr>
           <td colspan="4" class="text-end text-success">折扣價</td>
-          <td class="text-end text-success">NT$ {{ cart.final_total }}</td>
+          <td class="text-end text-success">NT$ {{ cartList.final_total }}</td>
         </tr>
       </tfoot>
     </table>
@@ -183,12 +183,14 @@
 
 <script>
 const { VITE_APP_URL, VITE_APP_PATH } = import.meta.env;
+import cartStore from "../../stores/cartStore.js";
+import { mapActions, mapState } from "pinia";
 export default {
   data() {
     return {
       productListData: [],
       productId: "",
-      cart: {},
+      cart: [],
       loadingItem: "", //loading效果項目暫存區
       orderData: {
         user: {
@@ -203,119 +205,94 @@ export default {
     };
   },
   methods: {
-    getProductList() {
-      this.isLoading = true;
-      this.$http
-        .get(`${VITE_APP_URL}/api/${VITE_APP_PATH}/products/all`)
-        .then((res) => {
-          this.productListData = res.data.products;
-        })
-        .catch((error) => {
-          alert(error.data.message);
-        })
-        .finally(() => {
-          this.isLoading = false;
-        });
-    },
-    openProductModal(id) {
-      this.loadingItem = id;
-      this.$http
-        .get(`${VITE_APP_URL}/api/${VITE_APP_PATH}/product/${id}`)
-        .then((res) => {
-          this.tempProduct = res.data.product;
-          this.loadingItem = ""; //清空loading暫存
-        })
-        .catch((error) => {
-          alert(error.data.message);
-        });
-    },
-    addToCart(product_id, qty = 1) {
-      const data = {
-        product_id,
-        qty,
-      };
-      this.loadingItem = product_id;
-      this.isLoading = true;
-      this.$http
-        .post(`${VITE_APP_URL}/api/${VITE_APP_PATH}/cart`, { data }) //{data:data}同名可以縮寫
-        .then((res) => {
-          alert(res.data.message);
-          this.getCartList();
-          this.loadingItem = ""; //清空loading暫存
-        })
-        .catch((error) => {
-          alert(error.response.data.message);
-        })
-        .finally(() => {
-          this.isLoading = false;
-        });
-    },
-    getCartList() {
-      this.isLoading = true;
-      this.$http
-        .get(`${VITE_APP_URL}/api/${VITE_APP_PATH}/cart`)
-        .then((res) => {
-          this.cart = res.data.data;
-        })
-        .catch((error) => {
-          alert(error.response.data.message);
-        })
-        .finally(() => {
-          this.isLoading = false;
-        });
-    },
-    updateCartItem(cartItem) {
-      //購物車的id 產品的id
-      const data = {
-        product_id: cartItem.product_id,
-        qty: cartItem.qty,
-      };
-      this.loadingItem = cartItem.id;
-      this.$http
-        .put(`${VITE_APP_URL}/api/${VITE_APP_PATH}/cart/${cartItem.id}`, {
-          data,
-        }) //{data:data}同名可以縮寫
-        .then((res) => {
-          console.log(res);
-          this.getCartList();
-          this.loadingItem = "";
-        })
-        .catch((error) => {
-          alert(error.response.data.message);
-        });
-    },
-    deleteCartItem(cartItem) {
-      this.isLoading = true;
-      this.loadingItem = cartItem.id;
-      this.$http
-        .delete(`${VITE_APP_URL}/api/${VITE_APP_PATH}/cart/${cartItem.id}`) //{data:data}同名可以縮寫
-        .then((res) => {
-          alert(res.data.message);
-          this.getCartList();
-          this.loadingItem = "";
-        })
-        .catch((error) => {
-          alert(error.response.data.message);
-        })
-        .finally(() => {
-          this.isLoading = false;
-        });
-    },
-    deleteAllCartItem() {
-      this.isLoading = true;
-      this.$http
-        .delete(`${VITE_APP_URL}/api/${VITE_APP_PATH}/carts`)
-        .then((res) => {
-          alert(res.data.message);
-          this.getCartList();
-        })
-        .catch((error) => {
-          alert(error.response.data.message);
-        })
-        .finally(() => {
-          this.isLoading = false;
-        });
-    },
+    // addToCart(product_id, qty = 1) {
+    //   const data = {
+    //     product_id,
+    //     qty,
+    //   };
+    //   this.loadingItem = product_id;
+    //   this.isLoading = true;
+    //   this.$http
+    //     .post(`${VITE_APP_URL}/api/${VITE_APP_PATH}/cart`, { data }) //{data:data}同名可以縮寫
+    //     .then((res) => {
+    //       alert(res.data.message);
+    //       console.log(res.data);
+    //       this.getCartList();
+    //       this.loadingItem = ""; //清空loading暫存
+    //     })
+    //     .catch((error) => {
+    //       alert(error.response.data.message);
+    //     })
+    //     .finally(() => {
+    //       this.isLoading = false;
+    //     });
+    // },
+    // getCartList() {
+    //   this.isLoading = true;
+    //   this.$http
+    //     .get(`${VITE_APP_URL}/api/${VITE_APP_PATH}/cart`)
+    //     .then((res) => {
+    //       this.cart = res.data.data;
+    //     })
+    //     .catch((error) => {
+    //       alert(error.response.data.message);
+    //     })
+    //     .finally(() => {
+    //       this.isLoading = false;
+    //     });
+    // },
+    // updateCartItem(cartItem) {
+    //   //購物車的id 產品的id
+    //   const data = {
+    //     product_id: cartItem.product_id,
+    //     qty: cartItem.qty,
+    //   };
+    //   this.loadingItem = cartItem.id;
+    //   this.$http
+    //     .put(`${VITE_APP_URL}/api/${VITE_APP_PATH}/cart/${cartItem.id}`, {
+    //       data,
+    //     }) //{data:data}同名可以縮寫
+    //     .then((res) => {
+    //       console.log(res);
+    //       this.getCartList();
+    //       this.loadingItem = "";
+    //     })
+    //     .catch((error) => {
+    //       alert(error.response.data.message);
+    //     });
+    // },
+    // deleteCartItem(cartItem) {
+    //   this.isLoading = true;
+    //   this.loadingItem = cartItem.id;
+    //   this.$http
+    //     .delete(`${VITE_APP_URL}/api/${VITE_APP_PATH}/cart/${cartItem.id}`) //{data:data}同名可以縮寫
+    //     .then((res) => {
+    //       alert(res.data.message);
+    //       this.getCartList();
+    //       this.loadingItem = "";
+    //     })
+    //     .catch((error) => {
+    //       alert(error.response.data.message);
+    //     })
+    //     .finally(() => {
+    //       this.isLoading = false;
+    //     });
+    // },
+    // deleteAllCartItem() {
+    //   this.isLoading = true;
+    //   this.$http
+    //     .delete(`${VITE_APP_URL}/api/${VITE_APP_PATH}/carts`)
+    //     .then((res) => {
+    //       alert(res.data.message);
+    //       this.getCartList();
+    //     })
+    //     .catch((error) => {
+    //       alert(error.response.data.message);
+    //     })
+    //     .finally(() => {
+    //       this.isLoading = false;
+    //     });
+    // },
     isPhone(value) {
       const phoneNumber = /^(09)[0-9]{8}$/;
       return phoneNumber.test(value) ? true : "請填寫正確的手機號碼格式";
@@ -340,9 +317,17 @@ export default {
           this.isLoading = false;
         });
     },
+    ...mapActions(cartStore, [
+      "getCartList",
+      "deleteCartItem",
+      "updateCartItem",
+      "deleteAllCartItem",
+    ]),
+  },
+  computed: {
+    ...mapState(cartStore, ["cartList"]),
   },
   mounted() {
-    this.getProductList();
     this.getCartList();
   },
 };

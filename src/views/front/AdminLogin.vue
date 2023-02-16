@@ -30,7 +30,9 @@
         >
           登入
         </button>
-        <!-- <button class="btn btn-primary w-100 py-2 d-block mx-auto loginCheckBtn" type="submit">確認是否登入</button> -->
+        <RouterLink to="/home" class="text-center mt-2"
+          >back to index
+        </RouterLink>
       </div>
     </div>
   </div>

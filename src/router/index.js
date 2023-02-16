@@ -2,13 +2,14 @@ import { createRouter, createWebHashHistory } from "vue-router";
 
 const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL),
+  linkActiveClass: "active",
   routes: [
     {
       path: "/",
       component: () => import("../views/FrontLayout.vue"),
       children: [
         {
-          path: "/",
+          path: "home",
           name: "home",
           component: () => import("../views/front/HomeView.vue"),
         },
@@ -32,12 +33,12 @@ const router = createRouter({
           name: "cart",
           component: () => import("../views/front/CartView.vue"),
         },
-        {
-          path: "login",
-          name: "login",
-          component: () => import("../views/front/AdminLogin.vue"),
-        },
       ],
+    },
+    {
+      path: "/login",
+      name: "login",
+      component: () => import("../views/front/AdminLogin.vue"),
     },
     {
       path: "/admin",
@@ -52,6 +53,11 @@ const router = createRouter({
           component: () => import("../views/admin/AdminOrders.vue"),
         },
       ],
+    },
+    //404
+    {
+      path: "/:pathMath(.*)*",
+      component: () => import("../views/NotFound.vue"),
     },
   ],
 });

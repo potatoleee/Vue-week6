@@ -75,8 +75,7 @@
     :temp-data="tempData"
     @update="getProductList"
     ref="deleteProductModal"
-  ></DeleteModal
-  >>
+  ></DeleteModal>
   <!-- 刪除 Modal end-->
 </template>
 
@@ -84,7 +83,7 @@
 import UploadImages from "../../components/admin/UploadImages.vue";
 import DeleteModal from "../../components/admin/DeleteModal.vue";
 import ProductModal from "../../components/admin/ProductModal.vue";
-import PaginationComponent from "../../components/admin/PaginationComponent.vue";
+import PaginationComponent from "../../components/PaginationComponent.vue";
 
 const { VITE_APP_URL, VITE_APP_PATH } = import.meta.env;
 export default {
@@ -103,7 +102,7 @@ export default {
     };
   },
   methods: {
-    //取得產品列表
+    //取得後台產品列表
     getProductList(page = 1) {
       this.$http
         .get(

@@ -1,9 +1,11 @@
 <template>
-  <h1>這是後台儀表板</h1>
-  <RouterLink to="/admin/products">產品管理</RouterLink>|
-  <RouterLink to="/admin/orders">訂單管理</RouterLink>|
-  <RouterLink to="/">回到前台首頁</RouterLink>|
-  <a href="#" @click.prevent="logout">登出</a>
+  <nav class="d-flex align-items-center justify-content-center">
+    <h1>後台儀表板</h1>
+    <RouterLink to="/admin/products">產品管理</RouterLink>|
+    <RouterLink to="/admin/orders">訂單管理</RouterLink>|
+    <RouterLink to="/">回到前台首頁</RouterLink>|
+    <a href="#" @click.prevent="logout">登出</a>
+  </nav>
   <RouterView></RouterView>
 </template>
 <style lang="scss"></style>
