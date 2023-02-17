@@ -107,17 +107,7 @@ export default {
     return {
       productListData: [],
       productId: "",
-      cart: [],
       loadingItem: "", //loading效果項目暫存區
-      orderData: {
-        user: {
-          name: "",
-          email: "",
-          tel: "",
-          address: "",
-        },
-        message: "",
-      },
     };
   },
   methods: {
