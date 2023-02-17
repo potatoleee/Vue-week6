@@ -32,13 +32,10 @@ export default {
 
       this.$http
         .post(`${VITE_APP_URL}/api/user/check`)
-        .then((res) => {
-          console.log(res.data);
-          // this.getProductList();
-        })
+        .then(() => {})
         .catch(() => {
           alert("請先登入帳號密碼喔～感謝你！");
-          this.$router.back("/login");
+          this.$router.push("/login");
         });
     },
   },

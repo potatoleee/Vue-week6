@@ -30,9 +30,7 @@
         >
           登入
         </button>
-        <RouterLink to="/home" class="text-center mt-2"
-          >back to index
-        </RouterLink>
+        <RouterLink to="/" class="text-center mt-2">back to index </RouterLink>
       </div>
     </div>
   </div>

@@ -6,7 +6,7 @@
         <ul class="row gy-6">
           <li
             class="col-6 col-lg-4 px-md-6 d-flex flex-column align-items-center"
-            v-for="product in productList"
+            v-for="product in sortProducts"
             :key="product.id"
           >
             <RouterLink :to="`/product/${product.id}`">
@@ -38,10 +38,11 @@
     </div>
   </div>
   <div class="container d-flex justify-content-center">
-    <PaginationComponent
+    <!-- <PaginationComponent
       :pageIn="page"
       :getProductList="getProductList"
-    ></PaginationComponent>
+    ></PaginationComponent> -->
+    <PaginationComponent></PaginationComponent>
   </div>
 </template>
 
@@ -49,41 +50,25 @@
 import { RouterLink } from "vue-router";
 import PaginationComponent from "../../components/PaginationComponent.vue";
 import cartStore from "../../stores/cartStore.js";
-// import productsStore from "../../stores/productsStore.js";
-import { mapActions } from "pinia";
-const { VITE_APP_URL, VITE_APP_PATH } = import.meta.env;
+import productsStore from "../../stores/productsStore.js";
+import loadingStore from "../../stores/loadingStore.js";
+// import loadingStore from "../../stores/loadingStore.js";
+import { mapState, mapActions } from "pinia";
 export default {
   data() {
     return {
       productList: [],
       page: {},
-      isLoading: false,
     };
   },
   methods: {
-    getProductList(page = 1) {
-      this.isLoading = true;
-      this.$http
-        .get(`${VITE_APP_URL}/api/${VITE_APP_PATH}/products/?page=${page}`)
-        .then((res) => {
-          console.log(res.data);
-          this.productList = res.data.products;
-          this.page = res.data.pagination;
-          console.log(this.page);
-        })
-        .catch((error) => {
-          alert(error.data.message);
-        })
-        .finally(() => {
-          this.isLoading = false;
-        });
-    },
     ...mapActions(cartStore, ["addToCart"]),
-    // ...mapActions(productsStore, ["getProductList"]),
+    ...mapActions(productsStore, ["getProductList"]),
   },
-  // computed: {
-  //   ...mapState(productsStore, ["sortProducts"]),
-  // },
+  computed: {
+    ...mapState(loadingStore, ["isLoading"]),
+    ...mapState(productsStore, ["sortProducts"]),
+  },
   mounted() {
     this.getProductList();
   },

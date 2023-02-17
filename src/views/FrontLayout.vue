@@ -1,7 +1,7 @@
 <template>
   <div class="d-flex align-items-center justify-content-center">
     <h1>這是前台頁面</h1>
-    <RouterLink to="/home">home</RouterLink>|
+    <RouterLink to="/">home</RouterLink>|
     <RouterLink to="/about">about</RouterLink>|
     <RouterLink to="/products">產品一覽</RouterLink>|
     <RouterLink to="/cart">購物車 {{ cartList.carts?.length }} </RouterLink>|

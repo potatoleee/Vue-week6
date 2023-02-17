@@ -20,7 +20,6 @@ export default {
       this.$http
         .get(`${VITE_APP_URL}/api/${VITE_APP_PATH}/product/${id}`)
         .then((res) => {
-          console.log(res.data.product);
           this.product = res.data.product;
         });
     },

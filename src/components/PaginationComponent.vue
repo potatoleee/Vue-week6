@@ -37,7 +37,15 @@
 </template>
 
 <script>
+import productsStore from "../stores/productsStore.js";
+import { mapState, mapActions } from "pinia";
 export default {
-  props: ["pageIn", "getProductList"],
+  // props: ["pageIn", "getProductList"],
+  methods: {
+    ...mapActions(productsStore, ["getProductList"]),
+  },
+  computed: {
+    ...mapState(productsStore, ["pageIn"]),
+  },
 };
 </script>

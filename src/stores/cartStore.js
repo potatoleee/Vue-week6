@@ -1,13 +1,12 @@
 import { defineStore } from "pinia";
 import axios from "axios";
+import Swal from "sweetalert2";
 import loadingStore from "./loadingStore.js";
 const loading = loadingStore();
-
 const { VITE_APP_URL, VITE_APP_PATH } = import.meta.env;
 export default defineStore("cartStore", {
   state: () => ({
     cart: {},
-    // productId: "",
   }),
   actions: {
     addToCart(product_id) {
@@ -15,38 +14,38 @@ export default defineStore("cartStore", {
         product_id,
         qty: 1,
       };
-      //   this.loadingItem = product_id;
-      loading.isLoading = true;
+      this.loadingItem = product_id;
+      // loading.isLoading = true;
       //   this.$http 不能用這種方式？
       axios
         .post(`${VITE_APP_URL}/api/${VITE_APP_PATH}/cart`, { data }) //{data:data}同名可以縮寫
-        .then((res) => {
-          alert(res.data.message);
-          console.log(res.data);
+        .then(() => {
           this.getCartList();
-          //   this.loadingItem = ""; //清空loading暫存
+          Swal.fire({
+            position: "top-end",
+            icon: "success",
+            title: "已加入購物車",
+            showConfirmButton: false,
+            timer: 800,
+          });
+          this.loadingItem = ""; //清空loading暫存
+        })
+        .catch((error) => {
+          alert(error.response.data.message);
+        });
+    },
+    getCartList() {
+      loading.isLoading = true;
+      axios
+        .get(`${VITE_APP_URL}/api/${VITE_APP_PATH}/cart`)
+        .then((res) => {
+          this.cart = res.data.data;
         })
         .catch((error) => {
           alert(error.response.data.message);
         })
         .finally(() => {
           loading.isLoading = false;
-        });
-    },
-    getCartList() {
-      //   this.isLoading = true;
-      axios
-        .get(`${VITE_APP_URL}/api/${VITE_APP_PATH}/cart`)
-        .then((res) => {
-          this.cart = res.data.data;
-          console.log(res.data);
-          console.log(this.cart);
-        })
-        .catch((error) => {
-          alert(error.response.data.message);
-        })
-        .finally(() => {
-          this.isLoading = false;
         });
     },
     updateCartItem(cartItem) {
@@ -70,12 +69,18 @@ export default defineStore("cartStore", {
         });
     },
     deleteCartItem(cartItem) {
-      this.isLoading = true;
+      loading.isLoading = true;
       this.loadingItem = cartItem.id;
       axios
         .delete(`${VITE_APP_URL}/api/${VITE_APP_PATH}/cart/${cartItem.id}`) //{data:data}同名可以縮寫
-        .then((res) => {
-          alert(res.data.message);
+        .then(() => {
+          Swal.fire({
+            position: "top-end",
+            icon: "success",
+            title: "已刪除品項",
+            showConfirmButton: false,
+            timer: 800,
+          });
           this.getCartList();
           this.loadingItem = "";
         })
@@ -83,22 +88,24 @@ export default defineStore("cartStore", {
           alert(error.response.data.message);
         })
         .finally(() => {
-          this.isLoading = false;
+          loading.isLoading = false;
         });
     },
     deleteAllCartItem() {
-      this.isLoading = true;
       axios
         .delete(`${VITE_APP_URL}/api/${VITE_APP_PATH}/carts`)
-        .then((res) => {
-          alert(res.data.message);
+        .then(() => {
+          Swal.fire({
+            position: "top-end",
+            icon: "success",
+            title: "已刪除全部品項",
+            showConfirmButton: false,
+            timer: 800,
+          });
           this.getCartList();
         })
         .catch((error) => {
           alert(error.response.data.message);
-        })
-        .finally(() => {
-          this.isLoading = false;
         });
     },
   },

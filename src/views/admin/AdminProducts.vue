@@ -125,12 +125,10 @@ export default {
           is_enabled: 1,
         };
         this.$refs.editProductModal.show();
-        console.log(this.tempData);
         this.isNew = true;
       } else if (state === "edit") {
         this.$refs.editProductModal.show();
         this.tempData = { ...product };
-        console.log(this.tempData);
         this.isNew = false;
       } else if (state === "delete") {
         this.$refs.deleteProductModal.show();
